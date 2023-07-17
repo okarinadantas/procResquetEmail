@@ -1,36 +1,33 @@
-USE adventureworks2019
+USE adventureworks2019;
+GO
 
-go
-
-if exists (select 1 from sys.objects where name = 'Retornalogin')
-begin
-drop procedure Retornalogin
-end
-
-go
+IF EXISTS (SELECT 1 FROM sys.objects WHERE name = 'Retornalogin')
+BEGIN
+    DROP PROCEDURE Retornalogin;
+END
+GO
 
 CREATE PROCEDURE Retornalogin  
-
-@email   VARCHAR (40),
-@senha varchar (10)
+    @email VARCHAR(40),
+    @senha VARCHAR(10)
 AS
-  BEGIN
-      SET nocount ON
+BEGIN
+    SET NOCOUNT ON;
 
-      SELECT PE.[emailaddress], PP.[PasswordSalt]
-      FROM   [Person].[emailaddress] PE
-	  JOIN [Person].[Password] PP ON PP.[BusinessEntityID] = PE.[BusinessEntityID]
-      WHERE   @email = [emailaddress] AND @senha = [PasswordSalt]
+    SELECT PE.emailaddress, PP.PasswordSalt
+    FROM Person.emailaddress PE
+    JOIN Person.Password PP ON PP.BusinessEntityID = PE.BusinessEntityID
+    WHERE PE.emailaddress = @email
+      AND PP.PasswordSalt = @senha;
 
-      SET nocount OFF
-  END;
+    SET NOCOUNT OFF;
+END;
+GO
 
-  go
+-- Test the stored procedure
+-- EXEC Retornalogin 'ken0@adventure-works.com', 'bE3XiWw=';
 
---retorno teste
---EXEC Retornalogin   'ken0@adventure-works.com', 'bE3XiWw=' 
-
-
- --SELECT top 5 PE.[emailaddress], PP.[PasswordSalt]
-      --FROM   [Person].[emailaddress] PE
-	  --JOIN [Person].[Password] PP ON PP.[BusinessEntityID] = PE.[BusinessEntityID]
+-- Example SELECT statement (top 5 records)
+-- SELECT TOP 5 PE.emailaddress, PP.PasswordSalt
+-- FROM Person.emailaddress PE
+-- JOIN Person.Password PP ON PP.BusinessEntityID = PE.BusinessEntityID;
